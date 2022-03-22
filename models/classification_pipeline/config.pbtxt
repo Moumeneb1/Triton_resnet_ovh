@@ -1,0 +1,49 @@
+name: "classification_pipeline"
+max_batch_size: 32
+platform: "ensemble"
+
+ensemble_scheduling {
+  step [
+    {
+      model_name: "onnx-model-gpu"
+      model_version: -1
+      input_map {
+        key: "input"
+        value: "input"
+      }
+      output_map {
+        key: "output"
+        value: "output"
+      }
+    }
+    ,
+    {
+      model_name: "add_json"
+      model_version: -1
+      input_map {
+        key: "in"
+        value: "output"
+      }
+      output_map {
+        key: "json_output"
+        value: "classification_output"
+      }
+    }
+  ]
+}
+
+
+input [
+  {
+    name: "input"
+    data_type: TYPE_FP32
+    dims: [ 3, 224, 224 ]
+  }
+]
+output [
+  {
+    name: "classification_output"
+    data_type: TYPE_STRING
+    dims: [ -1 ]
+  }
+]
